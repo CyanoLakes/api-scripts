@@ -9,21 +9,14 @@ format <- "json"
 # import credentials file with username, password and wdir
 source("credentials.R")
 
-# Login credentials
-#username <- "TasHydro"
-#password <- "WoodsLake"
-
-# Specify working directory
-#wdir <- "/home/mark/Documents/TasHydro/"
-
 # Specify output file
 file.stats <- "CyanoLakes_HD_stats.csv"
 
 # Install and require needed packages (first run only)
 #install.packages("httr")
 #install.packages("jsonlite")
-#require("httr")
-#require("jsonlite")
+require("httr")
+require("jsonlite")
 
 # Function to query database
 query <- function(call, username, password)
