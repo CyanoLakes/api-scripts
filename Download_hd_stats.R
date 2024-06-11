@@ -2,6 +2,9 @@
 # Downloads chl-a and bloom index all ssmall dams in subscription, saves to csv
 # Author: CyanoLakes (Pty) Ltd
 
+# Optionally specify one or more dams in this list
+selectedDams <- c()
+
 # API query options
 base <- "https://online.cyanolakes.com/api/"
 format <- "json"
@@ -54,10 +57,13 @@ Data <- data.frame(
 damscall <- paste(base,"dams","/?","format","=", format, sep="")
 dams <- query(damscall, username, password )
 
-print(dams)
-
 # Convert to dataframe
 dams <- as.data.frame(dams)
+
+# Filter by selected Dam
+if (length(selectedDams) > 0 ) {
+	 dams <- dams[dams$name %in% selectedDams, ]
+}
 
 # Get names
 damnames <- dams$name
