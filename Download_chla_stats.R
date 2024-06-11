@@ -2,6 +2,9 @@
 # Downloads all chl-a data for all dams in subscription, saves to csv 
 # Author: CyanoLakes (Pty) Ltd
 
+# Optionally specify one or more dams in this list
+selectedDams <- c()
+
 # API query options
 base <- "https://online.cyanolakes.com/api/"
 format <- "json"
@@ -41,18 +44,22 @@ chla_mean=numeric(0),
 chla_max=numeric(0),
 chla_min=numeric(0),
 chla_std=numeric(0),
-chla_cyano=numeric(0),
-chla_noncyan=numeric(0),
+turbidity_med=numeric(0),
+turbidity_min=numeric(0),
+turbidity_max=numeric(0),
 stringsAsFactors=F)
 
 # Query dams
 damscall <- paste(base,"dams","?","format","=", format, sep="")
 dams <- query(damscall, username, password )
 
-print(dams)
-
 # Convert to dataframe
 dams <- as.data.frame(dams)
+
+# Filter by selected Dam
+if (length(selectedDams) > 0 ) {
+	 dams <- dams[dams$name %in% selectedDams, ]
+}
 
 # Get names
 damnames <- dams$name
@@ -95,8 +102,9 @@ for(dam.n in dams$id) {
 		stats$chla_max,
 		stats$chla_min,
 		stats$chla_std,
-		stats$chla_cyano,
-		stats$chla_noncyano
+		stats$attenuation_med,
+		stats$attenuation_q1,
+		stats$attenuation_q3
 		)
 
 		print(paste("Downloaded statistics for ", date.n))
