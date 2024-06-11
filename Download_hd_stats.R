@@ -6,12 +6,15 @@
 base <- "https://online.cyanolakes.com/api/"
 format <- "json"
 
+# import credentials file with username, password and wdir
+source("credentials.R")
+
 # Login credentials
-username <- "username"
-password <- "password"
+#username <- "TasHydro"
+#password <- "WoodsLake"
 
 # Specify working directory
-wdir <- "/dir/"
+#wdir <- "/home/mark/Documents/TasHydro/"
 
 # Specify output file
 file.stats <- "CyanoLakes_HD_stats.csv"
