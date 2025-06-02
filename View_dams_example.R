@@ -12,9 +12,8 @@
 library("jsonlite")
 library("httr")
 
-# Login credentials
-username <- "username"
-password <- "password"
+# import credentials file with username, password and wdir
+source("credentials.R")
 
 # API query options
 base <- "https://online.cyanolakes.com/api/"

@@ -2,12 +2,7 @@
 # Downloads all statistics for all dams in subscription, saves to csv
 # Author: CyanoLakes (Pty) Ltd
 
-# Login credentials
-username <- "username"
-password <- "password"
-
-# Specify working directory
-wdir <- "/Directory/"
+source("credentials.R")
 
 # Specify name of output file
 file.stats <- "CyanoLakes_all_stats.csv"

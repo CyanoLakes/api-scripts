@@ -2,12 +2,8 @@
 # Download all risk levels and recommendations for all dams in subscription, saves to csv
 # Author: CyanoLakes (Pty) Ltd
 
-# Login credentials
-username <- "username"
-password <- "password"
-
-# Specify working directory
-wdir <- "/Directory/"
+# import credentials file with username, password and wdir
+source("credentials.R")
 
 # Specify output file
 file.stats <- "CyanoLakes_risk_levels.csv"
