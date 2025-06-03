@@ -1,5 +1,5 @@
-username <- "zutari"
-password <- "zutari"
+username <- "my username"
+password <- "my password"
 
 # Working directory
 wdir <- paste0(getwd(), "/")
