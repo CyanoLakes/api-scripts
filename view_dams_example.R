@@ -1,12 +1,11 @@
-# Example API query script 
-# Displays information on all dams in subscription
-# Author: CyanoLakes (Pty) Ltd
+.libPaths("~/R/library")
+require("httr")
+require("jsonlite")
 
-# Install and require needed packages
-#install.packages("httr")
-#install.packages("jsonlite")
-#require("httr")
-#require("jsonlite")
+# Author: CyanoLakes (Pty) Ltd
+# Example API query script
+# Displays information on all dams in subscription
+
 
 # Open libraries
 library("jsonlite")

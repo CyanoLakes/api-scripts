@@ -26,10 +26,10 @@ How to download data:
 1. Download the R scripts from Github
 2. Copy the R scripts to a folder on your computer
 3. Download and install R on your computer from https://www.r-project.org
-4. Edit the R scripts by specifying your username, password, the directory and the file
-name where you would like to save the data
-5. Once installed, run the scripts in R
-6. Check that the data has been downloaded to the file specified in your script
+4. On first use run start.R `Rscript start.R` to install required packages and set up the library
+5. Specify your username and password in credentials.R
+6. Run the scripts from the terminal using the Rscript command
+7. Check that the data has been downloaded to your working directory
 
 To view the a description of all data available through the API,
 refer to `Data_Description.xlsx`. 

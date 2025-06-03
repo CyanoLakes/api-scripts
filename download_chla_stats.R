@@ -1,47 +1,44 @@
-# Example API query script 
-# Download all risk levels and recommendations for all dams in subscription, saves to csv
+.libPaths("~/R/library")
+require("httr")
+require("jsonlite")
+# Example API query script
+# Downloads all chl-a data for all dams in subscription, saves to csv 
 # Author: CyanoLakes (Pty) Ltd
+
+# Optionally specify one or more dams in this list
+selectedDams <- c()
+
+# API query options
+base <- "https://online.cyanolakes.com/api/"
+format <- "json"
 
 # import credentials file with username, password and wdir
 source("credentials.R")
 
+# Get utility functions
+source("utils.R")
+
 # Specify output file
-file.stats <- "CyanoLakes_risk_levels.csv"
-
-# Install and require needed packages (first run only)
-#install.packages("httr")
-#install.packages("jsonlite")
-#require("httr")
-#require("jsonlite")
-
-# Function to query database
-query <- function(call, username, password)
-{
-result <- GET(call, authenticate(username,password, type = "basic"))
-result <- content(result, "text")
-result <- fromJSON(result, flatten = TRUE)
-return(result)
-}
+file.stats <- "CyanoLakes_chl_stats.csv"
 
 # Open libraries
 library("jsonlite")
 library("httr")
 
 # Pre-assign data frame
-Data <- data.frame(
-ID=numeric(0), 
+Data <- data.frame(ID=numeric(0), 
 name=character(0), 
 date=character(0), 
-full_contact=character(0),
-partial_contact=character(0),
-cyanobacteria_risk_level=character(0),
-cyanobacteria_cell_count=numeric(0),
-tropic_status=character(0),
+time=character(0),
+chla_med=numeric(0),
+chla_mean=numeric(0),
+chla_max=numeric(0),
+chla_min=numeric(0),
+chla_std=numeric(0),
+turbidity_med=numeric(0),
+turbidity_min=numeric(0),
+turbidity_max=numeric(0),
 stringsAsFactors=F)
-
-# API query options
-base <- "https://online.cyanolakes.com/api/"
-format <- "json"
 
 # Query dams
 damscall <- paste(base,"dams","?","format","=", format, sep="")
@@ -50,11 +47,16 @@ dams <- query(damscall, username, password )
 # Convert to dataframe
 dams <- as.data.frame(dams)
 
+# Filter by selected Dam
+if (length(selectedDams) > 0 ) {
+	 dams <- dams[dams$name %in% selectedDams, ]
+}
+
 # Get names
 damnames <- dams$name
 i <- 1
 
-# Loop through dams getting statistics for each
+#Loop through dams getting statistics for each
 for(dam.n in dams$id) {
 	print(paste("Downloading statistics for ", dam.n))
 
@@ -62,12 +64,12 @@ for(dam.n in dams$id) {
 	datescall <- paste(base,"dates/",dam.n,"?","format","=", format, sep="")
 	dates <- query(datescall, username, password)
 	
-	# Get stats for each date
+	# using available dates above, find out stats for each date
 	for(date.n in dates) {
 		# Get stats for date
-		statscall <- paste(base,"summary-statistics/",dam.n,"/",date.n,"?","format","=", format, sep="")
+		statscall <- paste(base,"statistics/",dam.n,"/",date.n,"?","format","=", format, sep="")
 		stats <- query(statscall, username, password)
-		stats <- as.data.frame(stats, stringsAsFactors=FALSE)
+		stats <- as.data.frame(stats)
 		
 		# If more than one row, choose row with smallest szenith value
 		if (nrow(stats)>1) {
@@ -80,15 +82,22 @@ for(dam.n in dams$id) {
 				}
 		}
 		
-		# Combine values
-		values <- c(dam.n,damnames[i],date.n,stats$full_contact,
-		stats$partial_contact,stats$cyanobacteria_risk_level,
-		stats$cyanobacteria_cell_count,stats$tropic_status)
-		#print(values)
-		
-		# Populate data frame (note order must be preserved)
-		Data[nrow(Data)+1, ] <- values
-		
+		## Populate data frame (note order must be preserved)
+		Data[nrow(Data)+1, ] <- c(
+		dam.n,
+		damnames[i],
+		stats$date,
+		stats$time,
+		stats$chla_med,
+		stats$chla_mean,
+		stats$chla_max,
+		stats$chla_min,
+		stats$chla_std,
+		stats$attenuation_med,
+		stats$attenuation_q1,
+		stats$attenuation_q3
+		)
+
 		print(paste("Downloaded statistics for ", date.n))
 	} 
 	i <- i+1
@@ -97,4 +106,3 @@ for(dam.n in dams$id) {
 # Write dataframe to file
 write.table(Data, file=paste0(wdir, file.stats), sep = ",", row.names=FALSE)
 print(paste("Downloaded data. Written to csv file at ", wdir, file.stats))
-

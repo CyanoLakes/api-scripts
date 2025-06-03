@@ -1,4 +1,7 @@
-# Example API query script 
+.libPaths("~/R/library")
+require("httr")
+require("jsonlite")
+# Example API query script
 # Downloads most recent statistics, risk levels and recommendations for all dams in subscription
 # Author: CyanoLakes (Pty) Ltd
 
@@ -7,12 +10,6 @@ source("credentials.R")
 
 # Specify name of output file
 file.stats <- "CyanoLakes_latest_stats.csv"
-
-# Install and require needed packages (first run only)
-#install.packages("httr")
-#install.packages("jsonlite")
-#require("httr")
-#require("jsonlite")
 
 # Function to query database
 query <- function(call, username, password)

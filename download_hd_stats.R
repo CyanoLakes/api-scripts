@@ -1,4 +1,7 @@
-# Example API query script 
+.libPaths("~/R/library")
+require("httr")
+require("jsonlite")
+# Example API query script
 # Downloads chl-a and bloom index all ssmall dams in subscription, saves to csv
 # Author: CyanoLakes (Pty) Ltd
 
@@ -14,12 +17,6 @@ source("credentials.R")
 
 # Specify output file
 file.stats <- "CyanoLakes_HD_stats.csv"
-
-# Install and require needed packages (first run only)
-#install.packages("httr")
-#install.packages("jsonlite")
-require("httr")
-require("jsonlite")
 
 # Function to query database
 query <- function(call, username, password)
