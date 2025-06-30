@@ -23,3 +23,13 @@ remove_duplicates <- function(df) {
     return(df)
   }
 }
+
+unlist_coordinates <- function(df) {
+  df$lat <- NA
+  df$lon <- NA
+  for (irow in 1:nrow(df)) { df$lat[irow] <- unlist(df$location.coordinates[irow])[2] }
+  for (irow in 1:nrow(df)) { df$lon[irow] <- unlist(df$location.coordinates[irow])[1] }
+  df$location.coordinates <- NULL
+  df$location.type <- NULL
+  return (df)
+}
