@@ -26,19 +26,24 @@ library("jsonlite")
 library("httr")
 
 # Pre-assign data frame
-Data <- data.frame(ID=numeric(0), 
-name=character(0), 
-date=character(0), 
-time=character(0),
-chla_med=numeric(0),
-chla_mean=numeric(0),
-chla_max=numeric(0),
-chla_min=numeric(0),
-chla_std=numeric(0),
-turbidity_med=numeric(0),
-turbidity_min=numeric(0),
-turbidity_max=numeric(0),
-stringsAsFactors=F)
+Data <- data.frame(
+	ID=numeric(0),
+	name=character(0),
+	date=character(0),
+	time=character(0),
+	chla_med=numeric(0),
+	chla_mean=numeric(0),
+	chla_max=numeric(0),
+	chla_min=numeric(0),
+	chla_std=numeric(0),
+	turbidity_med=numeric(0),
+	turbidity_min=numeric(0),
+	turbidity_max=numeric(0),
+	acdom_med=numeric(0),
+	acdom_min=numeric(0),
+	acdom_max=numeric(0),
+	stringsAsFactors=F
+)
 
 # Query dams
 damscall <- paste(base,"dams","?","format","=", format, sep="")
@@ -63,11 +68,15 @@ for(dam.n in dams$id) {
 	# Get dates
 	datescall <- paste(base,"dates/",dam.n,"?","format","=", format, sep="")
 	dates <- query(datescall, username, password)
-	
+
+	# For debugging
+	# j <- 1
+
 	# using available dates above, find out stats for each date
 	for(date.n in dates) {
 		# Get stats for date
 		statscall <- paste(base,"statistics/",dam.n,"/",date.n,"?","format","=", format, sep="")
+		# print(statscall)
 		stats <- query(statscall, username, password)
 		stats <- as.data.frame(stats)
 		
@@ -81,25 +90,36 @@ for(dam.n in dams$id) {
 					stats <- stats[2,]
 				}
 		}
-		
+
 		## Populate data frame (note order must be preserved)
-		Data[nrow(Data)+1, ] <- c(
-		dam.n,
-		damnames[i],
-		stats$date,
-		stats$time,
-		stats$chla_med,
-		stats$chla_mean,
-		stats$chla_max,
-		stats$chla_min,
-		stats$chla_std,
-		stats$attenuation_med,
-		stats$attenuation_q1,
-		stats$attenuation_q3
+		Data[nrow(Data)+1, ] <- data.frame(
+			 t(c(
+				 dam.n,
+				damnames[i],
+				stats$date,
+				stats$time,
+				stats$chla_merged.median,
+				stats$chla_merged.mean,
+				stats$chla_merged.q3,  # max
+				stats$chla_merged.q1,  # min
+				stats$chla_merged.std,
+				stats$attenuation,
+				stats$attenuation_low,
+				stats$attenuation_high,
+				stats$acdom,
+				stats$acdom_low,
+				stats$acdom_high
+			 )),
+			 stringsAsFactors = FALSE
 		)
 
 		print(paste("Downloaded statistics for ", date.n))
-	} 
+		# For debugging
+		# if (j == 5 || j == 10) {
+		#   break
+		# }
+		# j <- j+1
+	}
 	i <- i+1
 	}
 

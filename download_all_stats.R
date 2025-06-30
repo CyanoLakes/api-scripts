@@ -51,17 +51,26 @@ for (id in dams$id) {
 
     print(paste("Downloaded", date))
     j <- j + 1
+
+    # For debugging
+    # if (j == 20 || j == 40) {
+    #   break
+    # }
   }
   i <- i + 1
 }
 
 # Unlist coordinates 
-df$lat <- NA
-df$lon <- NA
-for (irow in 1:nrow(df)) { df$lat[irow] <- unlist(df$location.coordinates[irow])[2] }
-for (irow in 1:nrow(df)) { df$lon[irow] <- unlist(df$location.coordinates[irow])[1] }
-df$location.coordinates <- NULL
-df$location.type <- NULL
+df <- unlist_coordinates(df)
+
+# Check if we have any list columns, and delist
+list_cols <- sapply(df, is.list)
+
+# Unlist them
+for(col in names(df)[list_cols]) {
+  print("Found list columns... delisting.")
+  df[[col]] <- unlist(df[[col]])
+}
 
 # Write dataframe to file
 write.table(df, file = paste0(wdir, file.stats), sep = ",", row.names = FALSE)
