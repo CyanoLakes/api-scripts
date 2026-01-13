@@ -22,7 +22,7 @@ source("credentials.R")
 source("utils.R")
 
 # Specify output file
-file.stats <- paste0("Matchups_",depth,"_",timeDelta,".csv")
+file.stats <- paste0("Matchups_",depth,"_",timeDelta,"_",startDate,"_",endDate,".csv")
 
 # Open libraries
 library("jsonlite")
